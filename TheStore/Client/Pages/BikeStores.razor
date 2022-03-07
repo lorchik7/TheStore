@@ -1,0 +1,52 @@
+﻿@page "/bikestore"
+@inject IBikeStoresService BikeStoresService
+@inject NavigationManager NavigationManager
+
+
+<h3>Bike Stores</h3>
+
+@if (stores.Count == 0)
+{
+    <span>Loading Bike Stores...</span>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Store Id</th>
+                <th>Store Name</th>
+                <th>City</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var store in stores)
+            {
+            <tr>
+                <td>@store.Id</td>
+                <td>@store.StoreName</td>
+                <td>@store.City</td>
+                <td>
+                    <button class="btn btn-primary" @onclick="(() => ShowStore(store.Id))">Show</button>
+                </td>
+            </tr>
+        }
+            </tbody>
+        </table>
+    }
+
+@code
+{
+    List<TheStore.Shared.Store> stores = new List<TheStore.Shared.Store>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        stores = await BikeStoresService.GetBikeStores();
+    }
+
+    void ShowStore(int id)
+    {
+        NavigationManager.NavigateTo($"store/{id}");
+    }
+}

@@ -1,0 +1,24 @@
+﻿@page "/store/{id:int}"
+@inject IBikeStoresService BikeStoresService
+
+@if (store == null)
+{
+    <h3>The Store is loading...</h3>
+
+}
+else
+{
+    <h3>This is the @store.StoreName</h3>
+}
+
+@code {
+
+    [Parameter]
+    public int Id { get; set; }
+    TheStore.Shared.Store store = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        store = await BikeStoresService.GetSingleBikeStore(Id);
+    }
+}
