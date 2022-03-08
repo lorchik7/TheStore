@@ -1,0 +1,24 @@
+﻿ @inject IBikeStoresService BikeStoreService
+
+ <EditForm Model="theStore" OnSubmit="HandleSubmit">
+     <div class="form-group">
+         <label>Name</label>
+         <InputText @bind-Value="theStore.StoreName" class="form-control"></InputText>
+     </div>
+     <div class="form-group">
+         <label>City</label>
+         <InputText @bind-Value="theStore.City" class="form-control"></InputText>
+     </div>
+     <button type="submit" class="btn btn-primary">Submit</button>
+ </EditForm>
+
+@code {
+    public TheStore.Shared.Store theStore { get; set; } = new TheStore.Shared.Store();
+
+    async void HandleSubmit()
+    {
+        Console.WriteLine("Submit was called.");
+        Console.WriteLine(theStore.StoreName);
+        await BikeStoreService.CreateBikeStore(theStore);
+    }
+}

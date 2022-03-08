@@ -11,7 +11,7 @@ namespace TheStore.Server.Controllers
     [Route("api/[controller]")]
     public class BikeStoreController : ControllerBase
     {
-        List<Store> stores = new List<Store> {
+        static List<Store> stores = new List<Store> {
                 new Store { Id = 1, StoreName = "The Bike", City = "Sofia" },
                 new Store { Id = 2, StoreName = "Pimp My Bike", City = "Smolyan"},
         };
@@ -31,6 +31,14 @@ namespace TheStore.Server.Controllers
                 return NotFound("Store wasn't found.");
             }
             return Ok(store);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateBikeStore(Store store)
+        {
+            store.Id = stores.Max(s => s.Id + 1);
+            stores.Add(store);
+            return Ok(stores);
         }
 
     }

@@ -9,6 +9,7 @@ namespace TheStore.Client.Services
     {
         Task<List<Store>> GetBikeStores();
         Task<Store> GetSingleBikeStore(int id);
+        Task<List<Store>> CreateBikeStore(Store store);
     }
 
 }
