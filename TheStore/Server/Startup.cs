@@ -6,6 +6,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Linq;
+using TheStore.Server.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace TheStore.Server
 {
@@ -25,6 +27,10 @@ namespace TheStore.Server
 
             services.AddControllersWithViews();
             services.AddRazorPages();
+            services.AddDbContext<DataContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

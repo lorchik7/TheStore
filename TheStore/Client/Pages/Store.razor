@@ -8,17 +8,18 @@
 }
 else
 {
-    <h3>This is the @store.StoreName</h3>
+    <h3>This is the @store.name</h3>
 }
 
 @code {
 
     [Parameter]
-    public int Id { get; set; }
+    public int id { get; set; }
+
     TheStore.Shared.Store store = null;
 
     protected override async Task OnInitializedAsync()
     {
-        store = await BikeStoresService.GetSingleBikeStore(Id);
+        store = await BikeStoresService.GetSingleBikeStore(id);
     }
 }

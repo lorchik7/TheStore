@@ -3,29 +3,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using TheStore.Server.Data;
 using TheStore.Shared;
 
 namespace TheStore.Server.Controllers
 {
     [Route("api/[controller]")]
-    public class BikeStoreController : ControllerBase
+    public class BikeStoreController : Controller
     {
         static List<Store> stores = new List<Store> {
-                new Store { Id = 1, StoreName = "The Bike", City = "Sofia" },
-                new Store { Id = 2, StoreName = "Pimp My Bike", City = "Smolyan"},
+                new Store { id = 1, name = "The Bike", city = "Sofia" },
+                new Store { id = 2, name = "Pimp My Bike", city = "Smolyan"},
         };
+        private readonly DataContext _context;
 
+        public BikeStoreController(DataContext context)
+        {
+            _context = context;
+        }
         [HttpGet]
         public async Task<IActionResult> GetBikeStores()
         {
-            return Ok(stores);
+            return Ok(await _context.Stores.ToListAsync());
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetSingleSuperHero(int id)
+        public async Task<IActionResult> GetSingleBikeStore(int id)
         {
-            var store = stores.FirstOrDefault(s => s.Id == id);
+            var store = await _context.Stores.FirstOrDefaultAsync(s => s.id == id);
             if (store == null)
             {
                 return NotFound("Store wasn't found.");
@@ -34,12 +41,16 @@ namespace TheStore.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateBikeStore(Store store)
+        public async Task<IActionResult> CreateBikeStoreAsync(Store store)
         {
-            store.Id = stores.Max(s => s.Id + 1);
-            stores.Add(store);
-            return Ok(stores);
+            //store.Id = 23;
+            //stores.Add(store);
+            _context.Stores.Add(store);
+            await _context.SaveChangesAsync();
+            return Ok(await _context.Stores.ToListAsync());
         }
+
+
 
     }
 }

@@ -1,11 +1,12 @@
 ﻿@page "/bikestore"
-@inject IBikeStoresService BikeStoresService
+@inject IBikeStoresService BikeStoreService
 @inject NavigationManager NavigationManager
+@implements IDisposable
 
 
 <h3>Bike Stores</h3>
 
-@if (stores.Count == 0)
+@if (BikeStoreService.Stores.Count == 0)
 {
     <span>Loading Bike Stores...</span>
 }
@@ -14,41 +15,47 @@ else
     <table class="table">
         <thead>
             <tr>
-                <th>Store Id</th>
-                <th>Store Name</th>
+                <th>Id</th>
+                <th>Name</th>
                 <th>City</th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var store in stores)
+            @foreach (var store in BikeStoreService.Stores)
             {
-            <tr>
-                <td>@store.Id</td>
-                <td>@store.StoreName</td>
-                <td>@store.City</td>
-                <td>
-                    <button class="btn btn-primary" @onclick="(() => ShowStore(store.Id))">Show</button>
-                </td>
-            </tr>
-        }
-            </tbody>
-        </table>
-    }
+                <tr>
+                    <td>@store.id</td>
+                    <td>@store.name</td>
+                    <td>@store.city</td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="(() => ShowStore(store.id))">Show</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
 
 <EditStore></EditStore>
 
 @code
 {
-    List<TheStore.Shared.Store> stores = new List<TheStore.Shared.Store>();
+    @*List<TheStore.Shared.Store> stores = new List<TheStore.Shared.Store>();*@
 
     protected override async Task OnInitializedAsync()
     {
-        stores = await BikeStoresService.GetBikeStores();
+        await BikeStoreService.GetBikeStores();
+        BikeStoreService.OnChange += StateHasChanged;
     }
 
     void ShowStore(int id)
     {
         NavigationManager.NavigateTo($"store/{id}");
+    }
+
+    public void Dispose()
+    {
+        BikeStoreService.OnChange -= StateHasChanged;
     }
 }
